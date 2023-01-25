@@ -1,3 +1,4 @@
+const logger = require('../../utils/logger');
 const {
     bot
 } = require('./bot')
@@ -14,11 +15,12 @@ function sleep(ms) {
 
 async function sendMessage(message) {
     message += `<a href="https://t.me/visasponsor">@VisaSponsor</a>`
-
-    await bot.telegram.sendMessage(process.env.CHANNEL_ID, message, {
-        parse_mode: 'HTML',
-        disable_notification: true
-    })
+    if (process.env.APP_ENV == 'prod') {
+        await bot.telegram.sendMessage(process.env.CHANNEL_ID, message, {
+            parse_mode: 'HTML',
+            disable_notification: true
+        })
+    }else logger(message)
 }
 
 module.exports.SendJobs = async (data) => {

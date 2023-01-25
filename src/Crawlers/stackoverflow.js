@@ -1,9 +1,4 @@
 const Last = require('../models/Last');
-const moment = require('moment');
-const he = require('he');
-let Parser = require('rss-parser');
-let parser = new Parser();
-const updateCompany = require('../utils/updateCompany');
 
 
 const stackoverflowJobs = async () => {
@@ -33,7 +28,6 @@ const stackoverflowJobs = async () => {
                 content = he.decode(content);
                 const url = item.link;
                 const hashtags = [...item.categories];
-                updateCompany({ title, company, location, content, url, hashtags });
                 return {
                     title,
                     company,
@@ -48,7 +42,8 @@ const stackoverflowJobs = async () => {
         
         return (await jobs).filter(item => item);
     } catch (err) {
-        console.log(err)
+        console.log(err);
+        return [];
     }
 }
 

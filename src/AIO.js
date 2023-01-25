@@ -1,10 +1,11 @@
+const logger = require('./utils/logger');
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-    .then(() => console.log('connected to DB'))
-    .catch((err) => console.log(err));
+    .then(() => logger('connected to DB'))
+    .catch((err) => logger(err));
 
 const {
     relocateDotMeJobs

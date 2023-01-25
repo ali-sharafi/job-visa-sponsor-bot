@@ -8,7 +8,6 @@ const config = {
     },
     channelMode: true
 }
-console.log(Token);
 const bot = process.env.PROXY_SERVER ? new Telegraf(Token,config) : new Telegraf(Token)
 
 module.exports = { bot }

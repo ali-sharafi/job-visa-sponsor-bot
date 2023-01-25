@@ -6,24 +6,24 @@ const {
     GetAll
 } = require('./AIO');
 const dotenv = require('dotenv');
+const logger = require('./utils/logger');
 dotenv.config();
 
 
 if (process.env.UPDATE_DB === 'true') {
-    console.log('Update DB');
-    GetAll().then(data => {
-        console.log('Update DB done');
+    logger('Going to Update DB');
+    GetAll().then(() => {
+        logger('Update DB was done');
     });
 }
 
 let count = 0;
-cron.schedule('0 */6 * * *', () => {
-    console.log('cron job count: ', count++ + ', ' + new Date());
+cron.schedule('*/5 * * * *', () => {
+    logger(`cron job count: ${count++}`)
     GetAll().then(async (result) => {
         if (result.length != 0) {
             await SendJobs(result)
-        }
-        throw Error('result is empty')
+        } else throw Error('result is empty')
     }).catch((e) => {
         console.log(e);
     });

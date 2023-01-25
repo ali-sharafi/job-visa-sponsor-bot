@@ -1,6 +1,5 @@
 const Last = require('../models/Last');
 const axios = require('axios');
-const updateCompany = require('../utils/updateCompany');
 
 
 const landingJobs = async () => {
@@ -40,14 +39,6 @@ const landingJobs = async () => {
                 let content = '';
                 const url = item.url;
                 const hashtags = item.skills.map(item => item.name);
-                updateCompany({
-                    title,
-                    company,
-                    location,
-                    content,
-                    url,
-                    hashtags
-                });
                 return {
                     title,
                     company,
@@ -64,6 +55,7 @@ const landingJobs = async () => {
         return (await jobs).filter(item => item);
     } catch (err) {
         console.log(err)
+        return [];
     }
 }
 

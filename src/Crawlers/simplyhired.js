@@ -1,11 +1,6 @@
 const Last = require('../models/Last');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const _ = require('lodash');
-const he = require('he');
-let Parser = require('rss-parser');
-let parser = new Parser();
-const updateCompany = require('../utils/updateCompany');
 
 
 const simplyhiredJobs = async () => {
@@ -54,14 +49,6 @@ const simplyhiredJobs = async () => {
                     where: "simplyhired",
                     guid: url,
                 }).save();
-                updateCompany({
-                    title,
-                    company,
-                    location,
-                    content,
-                    url,
-                    hashtags
-                });
                 return {
                     title,
                     company,
@@ -79,7 +66,8 @@ const simplyhiredJobs = async () => {
 
         return (await jobs).filter(item => item);
     } catch (err) {
-        console.log(err)
+        console.log(err);
+        return [];
     }
 }
 
