@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - /app/node_modules
+      - ./:/app
+    depends_on:
+      - mongodb
+    env_file:
+      - ./.env
+    container_name: visa_bot
+  mongodb:
+    image: mongo:6.0.3
+    restart: always
+    env_file:
+      - ./.env
+    volumes: 
+      - dbdata:/data/db
+    ports:
+      - '27017:27017'
+    container_name: visa_mongo
+  npm:
+    image: node:18
+    working_dir: /app
+    entrypoint: [ "npm" ]
+    volumes:
+      - ./:/app
+
+volumes:
+  dbdata:
