@@ -1,32 +1,21 @@
 const mongoose = require("mongoose")
 
-const comoanySchema = new mongoose.Schema({
+const companySchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    locations: [{
+    location: {
         type: String,
-    }],
-    hashtags: [{
-        type: String,
-    }],
-    isUpdated: {
-        type: Boolean,
-        default: true
     },
-    messageId: {
+    registrationId: {
         type: String,
         default: null
     },
     createdAt: {
         type: Date,
         default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
 });
 
-module.exports = mongoose.model("Company", comoanySchema);
+module.exports = mongoose.model("Company", companySchema);
