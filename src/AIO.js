@@ -1,12 +1,4 @@
 const logger = require('./utils/logger');
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(() => logger('connected to DB'))
-    .catch((err) => logger(err));
-
 const {
     relocateDotMeJobs
 } = require('./Crawlers/relocatedotme');
@@ -45,6 +37,6 @@ module.exports.GetAll = async () => {
 
         return Result
     } catch (error) {
-        console.log(error);
+        logger(error);
     }
 }
