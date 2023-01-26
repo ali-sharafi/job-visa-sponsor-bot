@@ -14,11 +14,21 @@ function sleep(ms) {
 }
 
 async function sendMessage(message) {
-    message += `<a href="https://t.me/visasponsor">@VisaSponsor</a>`
+    message.text += `<a href="https://t.me/visasponsor">@VisaSponsor</a>`
     if (process.env.APP_ENV == 'prod') {
-        await bot.telegram.sendMessage(process.env.CHANNEL_ID, message, {
+        await bot.telegram.sendMessage(process.env.CHANNEL_ID, message.text, {
             parse_mode: 'HTML',
-            disable_notification: true
+            disable_notification: true,
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        {
+                            text: 'View job & Apply',
+                            url: message.url
+                        },
+                    ]
+                ]
+            },
         })
     }else logger(message)
 }

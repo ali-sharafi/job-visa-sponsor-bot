@@ -10,7 +10,7 @@ module.exports.creator = (Message, Index) => {
         options
     } = Message
     const message = `
-<a href="${url}"><b>${title}</b></a>
+<b>${title}</b>
 Company:  <i>${company}</i>
 Location : ${location}
 Source: ${source}
@@ -32,5 +32,8 @@ ${hashtags.map(tag => {
         return `#${tag}`
     }).join(' ')}
  `
-    return message.toString()
+    return {
+        text: message.toString(),
+        url
+    }
 }
