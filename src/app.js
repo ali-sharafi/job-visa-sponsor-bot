@@ -17,13 +17,12 @@ if (process.env.UPDATE_DB === 'true') {
     });
 }
 
-let count = 0;
-cron.schedule('*/5 * * * *', () => {
-    logger(`cron job count: ${count++}`)
+cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
+    logger('Cron job runs');
     GetAll().then(async (result) => {
         if (result.length != 0) {
             await SendJobs(result)
-        } else throw Error('result is empty')
+        } else logger('Result is empty')
     }).catch((e) => {
         console.log(e);
     });
