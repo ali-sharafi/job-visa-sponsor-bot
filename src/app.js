@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const cron = require('node-cron');
 const {
     SendJobs
@@ -5,17 +7,20 @@ const {
 const {
     GetAll
 } = require('./AIO');
-const dotenv = require('dotenv');
 const logger = require('./utils/logger');
-dotenv.config();
+const reader = require('./utils/reader');
+const db = require('./utils/db');
 
+db.connect().then(() => {
+    if (process.env.UPDATE_DB === 'true') {
+        logger('Going to Update DB');
+        GetAll().then(() => {
+            logger('Update DB was done');
+        });
+    }
 
-if (process.env.UPDATE_DB === 'true') {
-    logger('Going to Update DB');
-    GetAll().then(() => {
-        logger('Update DB was done');
-    });
-}
+    //reader();
+})
 
 cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
     logger('Cron job runs');
