@@ -21,7 +21,7 @@ services:
     volumes: 
       - dbdata:/data/db
     ports:
-      - '27017:27017'
+      - '27018:27017'
     container_name: visa_mongo
   npm:
     image: node:18
