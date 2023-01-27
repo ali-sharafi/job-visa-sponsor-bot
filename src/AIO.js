@@ -20,6 +20,7 @@ const {
 const {
     swissDevJobs
 } = require('./Crawlers/swissdevjobsdotch');
+const { linkedIn } = require('./Crawlers/linkedIn');
 
 
 module.exports.GetAll = async () => {
@@ -33,7 +34,8 @@ module.exports.GetAll = async () => {
             ...(await relocateMeDotEuJobs()),
             ...(await simplyhiredJobs()),
             ...(await swissDevJobs()),
-            ...(await landingJobs()));
+            ...(await landingJobs()),
+            ...(await linkedIn()));
 
         return Result
     } catch (error) {

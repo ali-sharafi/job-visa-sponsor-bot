@@ -18,8 +18,6 @@ db.connect().then(() => {
             logger('Update DB was done');
         });
     }
-
-    //reader();
 })
 
 cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
