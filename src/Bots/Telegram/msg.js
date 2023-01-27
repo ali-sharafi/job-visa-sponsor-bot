@@ -14,9 +14,7 @@ module.exports.creator = (Message, Index) => {
 <b>${title}</b>
 Company:  <i>${company}</i>
 Location : ${location}
-Source: ${source}${options ?
-`Options: ${options}` : ''}${when ?
-`Published: ${when}` : ''}
+Source: ${source}${options ? `\nOptions: ${options}` : ''}${when ? `\nPublished: ${when}` : ''}
 ${content}
 ${hashtags.map(tag => {
         tag = tag.replace(/\s+/g, '_')
