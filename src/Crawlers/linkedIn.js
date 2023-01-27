@@ -3,7 +3,7 @@ const Company = require('../models/Company');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { getHashtags, sleep } = require('../utils/tools');
-const source = 'linkedin';
+const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
 const lngDetector = new LanguageDetect();
 
