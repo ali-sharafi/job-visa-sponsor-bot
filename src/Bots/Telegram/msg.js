@@ -7,14 +7,16 @@ module.exports.creator = (Message, Index) => {
         url,
         hashtags,
         source,
-        options
+        options,
+        when
     } = Message
     const message = `
 <b>${title}</b>
 Company:  <i>${company}</i>
 Location : ${location}
-Source: ${source}
-${options ? `Options: ${options}` : ''}
+Source: ${source}${options ?
+`Options: ${options}` : ''}${when ?
+`Published: ${when}` : ''}
 ${content}
 ${hashtags.map(tag => {
         tag = tag.replace(/\s+/g, '_')
