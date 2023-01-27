@@ -18,6 +18,11 @@ const getHashtags = (title) => {
         .filter(item => item.length > 2).map(item => item.replace(/[^\w\s]/gi, ''));
 }
 
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = {
-    getHashtags
+    getHashtags,
+    sleep
 }

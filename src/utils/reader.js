@@ -2,7 +2,7 @@ const fs = require('fs');
 const Company = require('../models/Company');
 
 module.exports = () => {
-    fs.readFile('../companies.csv', 'utf-8', async (err, data) => {
+    fs.readFile(require('path').resolve(__dirname, '../companies.csv'), 'utf-8', async (err, data) => {
         if (err) {
             throw err;
         }

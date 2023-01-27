@@ -1,20 +1,13 @@
 const logger = require('../../utils/logger');
+const { sleep } = require('../../utils/tools');
 const {
     bot
 } = require('./bot')
-require('dotenv').config({
-    path: '../../env'
-})
 const {
     creator
 } = require('./msg');
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function sendMessage(message) {
-    // message.text += `<a href="https://t.me/visasponsor">@VisaSponsor</a>`
     if (process.env.APP_ENV == 'prod') {
         await bot.telegram.sendMessage(process.env.CHANNEL_ID, message.text, {
             parse_mode: 'HTML',
@@ -30,7 +23,7 @@ async function sendMessage(message) {
                 ]
             },
         })
-    }else logger(message)
+    }else logger(JSON.stringify(message))
 }
 
 module.exports.SendJobs = async (data) => {
