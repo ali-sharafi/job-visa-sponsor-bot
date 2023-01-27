@@ -1,4 +1,6 @@
-FROM node:18
+FROM node:18-alpine
+
+RUN apk add curl vim
 
 WORKDIR /app
 
