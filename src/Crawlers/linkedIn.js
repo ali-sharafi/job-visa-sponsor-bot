@@ -29,7 +29,7 @@ const linkedIn = async () => {
             if (!exist) {
                 await new Last({
                     where: source,
-                    guid: url,
+                    guid: guid,
                 }).save();
                 const canVisaSponsered = await Company.findOne({
                     "name": { $regex: company }
