@@ -1,6 +1,7 @@
 const Last = require('../models/Last');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const logger = require('../utils/logger');
 
 
 const relocateDotMeJobs = async () => {
@@ -45,7 +46,7 @@ const relocateDotMeJobs = async () => {
 
         return (await jobs).filter(item => item);
     } catch (err) {
-        console.log(err);
+        logger(JSON.stringify(err), false);
         return [];
     }
 }

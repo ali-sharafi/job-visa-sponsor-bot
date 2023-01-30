@@ -1,11 +1,8 @@
 const Last = require('../models/Last');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const _ = require('lodash');
-const he = require('he');
 let Parser = require('rss-parser');
-let parser = new Parser();
-
+const logger = require('../utils/logger');
 
 const reeddotcodotukJobs = async () => {
     try {
@@ -39,9 +36,9 @@ const reeddotcodotukJobs = async () => {
             const hashtags = title.toLowerCase()
                 .replace('full stack', 'fullstack')
                 .replace('big data', 'big-data')
-                .replace('software','')
-                .replace('engineer','')
-                .replace('developer','')
+                .replace('software', '')
+                .replace('engineer', '')
+                .replace('developer', '')
                 .replace('.net', 'dotnet')
                 .replace(/[^\w\s]/gi, '')
                 .replace(' and ', ' ')
@@ -78,7 +75,7 @@ const reeddotcodotukJobs = async () => {
 
         return (await jobs).filter(item => item);
     } catch (err) {
-        console.log(err);
+        logger(JSON.stringify(err), false);
         return [];
     }
 }
