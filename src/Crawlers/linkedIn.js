@@ -7,7 +7,7 @@ const util = require('node:util');
 const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
 const lngDetector = new LanguageDetect();
-const locations = ["Netherlands", "Germany"];
+const locations = ["Netherlands", "Germany", "Sweden", "Finland"];
 
 const linkedIn = async () => {
     try {
@@ -25,8 +25,9 @@ const linkedIn = async () => {
                 const when = $(job).find('time').text().trim();
                 const location = $(job).find('.job-search-card__location').text().trim();
                 const url = $(job).find('a').attr('href');
-                const guid = $(job).find('div.base-card').attr('data-entity-urn');
+                // const guid = $(job).find('div.base-card').attr('data-entity-urn');
                 const hashtags = getHashtags(title);
+                const guid = company + location + title;
                 const exist = await Last.findOne({
                     where: source,
                     guid: guid

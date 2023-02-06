@@ -21,6 +21,8 @@ const {
     swissDevJobs
 } = require('./Crawlers/swissdevjobsdotch');
 const { linkedIn } = require('./Crawlers/linkedIn');
+const Last = require('./models/Last');
+const moment = require('moment');
 
 
 module.exports.GetAll = async () => {
@@ -41,4 +43,10 @@ module.exports.GetAll = async () => {
     } catch (error) {
         logger(error);
     }
+}
+
+module.exports.RemoveLasts = async () => {
+    await Last.deleteMany({
+        createdAt: { $lt: moment().subtract(7, 'd').utc() }
+    })
 }

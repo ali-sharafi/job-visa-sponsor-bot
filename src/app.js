@@ -5,7 +5,7 @@ const {
     SendJobs
 } = require('./Bots/Telegram/DoStuff');
 const {
-    GetAll
+    GetAll, RemoveLasts
 } = require('./AIO');
 const logger = require('./utils/logger');
 const reader = require('./utils/reader');
@@ -29,4 +29,5 @@ cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
     }).catch((e) => {
         console.log(e);
     });
+    RemoveLasts();
 });
