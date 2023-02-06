@@ -37,27 +37,26 @@ const linkedIn = async () => {
                         where: source,
                         guid: guid,
                     }).save();
-                    const canVisaSponsered = await Company.findOne({
-                        "name": { $regex: company }
-                    })
+                    // const canVisaSponsered = await Company.findOne({
+                    //     "name": { $regex: company }
+                    // })
 
-                    if (canVisaSponsered) {
-                        const { content, isEnglish } = await getJobContent(url);
-                        if (isEnglish) {
-                            jobs.push({
-                                title,
-                                company,
-                                location,
-                                content,
-                                url,
-                                hashtags,
-                                options: null,
-                                source,
-                                when
-                            });
-                        }
-                        await sleep(10000);
+                    const { content, isEnglish } = await getJobContent(url);
+                    if (isEnglish) {
+                        jobs.push({
+                            title,
+                            company,
+                            location,
+                            content,
+                            url,
+                            hashtags,
+                            options: null,
+                            source,
+                            when
+                        });
                     }
+                    await sleep(10000);
+
                 }
             }
         }
