@@ -27,7 +27,7 @@ const linkedIn = async () => {
                 const url = $(job).find('a').attr('href');
                 // const guid = $(job).find('div.base-card').attr('data-entity-urn');
                 const hashtags = getHashtags(title);
-                const guid = company + location + title;
+                const guid = company + title;
                 const exist = await Last.findOne({
                     where: source,
                     guid: guid
