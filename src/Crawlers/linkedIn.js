@@ -2,7 +2,7 @@ const Last = require('../models/Last');
 const Company = require('../models/Company');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { getHashtags, sleep } = require('../utils/tools');
+const { getHashtags, sleep, convertStringToDateTime } = require('../utils/tools');
 const util = require('node:util');
 const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
@@ -52,7 +52,7 @@ const linkedIn = async () => {
                             hashtags,
                             options: null,
                             source,
-                            when
+                            when: convertStringToDateTime(when)
                         });
                     }
                     await sleep(10000);
