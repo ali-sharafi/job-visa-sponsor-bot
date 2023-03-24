@@ -14,4 +14,4 @@ COPY . .
 
 COPY .env.example .env
 
-CMD ["nodemon","app.js"]
+CMD ["nodemon","--ignore","storage/","app.js"]
