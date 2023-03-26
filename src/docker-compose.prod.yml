@@ -5,6 +5,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.production
+    restart: always
     volumes:
       - ./logs:/app/logs
       - /app/node_modules
