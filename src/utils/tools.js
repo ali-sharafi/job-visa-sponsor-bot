@@ -41,9 +41,28 @@ const convertStringToDateTime = (relativeTime) => {
     return datetime.toISOString().replace(/T|Z/g, ' ').trim();
 
 }
+const locations = [
+    {
+        name: 'Netherlands',
+        id: 178
+    },
+    {
+        name: 'Finland',
+        id: 79
+    },
+    {
+        name: 'Germany',
+        id: 96
+    },
+    {
+        name: 'Sweden',
+        id: 223
+    }
+]
 
 module.exports = {
     getHashtags,
     sleep,
-    convertStringToDateTime
+    convertStringToDateTime,
+    locations
 }

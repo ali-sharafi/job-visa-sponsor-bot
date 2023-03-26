@@ -1,34 +1,83 @@
 const path = require('path');
 const fs = require('fs').promises;
-const captchaSolver = require('./captchaSolver');
-const logger = require('./logger');
-var loggedIn = false;
-var page = null;
 const storageFolder = `${__dirname}/../storage`;
-const storagePath = path.resolve(storageFolder, 'captcha.png');
-const puppet = require('./Puppeteer')
+const puppet = require('./Puppeteer');
+const moment = require('moment');
+const { getHashtags, sleep, locations } = require('../utils/tools');
+const Last = require('../models/Last');
+const source = 'glassdoor';
+const glassdoorURL = 'https://www.glassdoor.com';
+var page = null;
+var browser = null;
 
 module.exports = async () => {
-    let browser = puppet.make();
+    browser = puppet.make();
     let ws = await browser.browserInit();
-
     if (!await browser.connect(ws)) {
         return console.log('failed')
     }
 
     page = browser.page;
-
-    page.on('response', async response => {
-        const url = response.url();
-        if (url.indexOf('Account/CheckSeatAllotment') !== -1) {
-            let resJson = await response.json();
-            checkResponse(resJson);
-        }
-    });
-
     await setCookies();
+    let jobs = await getJobs();
+    await browser.close();
+    browser = null;
 
-    gotToGlassdoodr();
+    return jobs;
+}
+
+async function getJobs() {
+    await gotToGlassdoodr();
+    let jobs = [];
+    for (let i = 0; i < locations.length; i++) {
+        await searchJobs(locations[i].id);
+        jobs.push(...(await parsePageJobs(locations[i].name)))
+        await sleep(10000);
+    }
+
+    return jobs;
+}
+
+async function parsePageJobs(country) {
+    let jobs = [];
+    const listItems = await page.$$('#JobResults li.react-job-listing');
+    let today = moment().format('YYYY-MM-DD');
+
+    for (const listItem of listItems) {
+        const { location, url, company, title } = await listItem.evaluate(element => {
+            return {
+                location: element.getAttribute('data-job-loc'),
+                url: element.querySelector('a').getAttribute('href'),
+                company: element.querySelectorAll('a')[1].querySelector('span').innerText,
+                title: element.querySelectorAll('a')[2].querySelector('span').innerText,
+            }
+        });
+        const guid = company + title;
+        const exist = await Last.findOne({
+            where: source,
+            guid: guid
+        });
+        if (guid && !exist) {
+            await new Last({
+                where: source,
+                guid: guid,
+            }).save();
+
+            jobs.push({
+                location: `${country}-${location}`,
+                url: `${glassdoorURL}${url}`,
+                company,
+                title,
+                content: '',
+                when: today,
+                source,
+                hashtags: getHashtags(title),
+                options: null,
+            })
+        }
+    }
+
+    return jobs;
 }
 
 async function gotToGlassdoodr() {
@@ -39,20 +88,18 @@ async function gotToGlassdoodr() {
         console.log('Needs to login');
         await login();
     } else console.log('Already logged In');
-    await page.screenshot({ path: path.resolve(storageFolder, 'loggedIn.png') })
-    searchJobs();
+
 }
 
-async function searchJobs() {
-    let netherlandsJobs = 'https://www.glassdoor.com/Job/jobs.htm?sc.keyword=developer&locT=N&locId=178?fromAge=1';
+async function searchJobs(locationId) {
+    let jobsLink = `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=developer&locT=N&locId=${locationId}`;
 
-    await page.goto(netherlandsJobs);
+    await page.goto(jobsLink);
     await page.waitForSelector('#filter_fromAge');//wait for Posted time div
     const currentUrl = await page.url();
-    const newUrl = `${currentUrl}?fromAge=1`;
+    const newUrl = `${currentUrl}?fromAge=1&sortBy=date_desc`;//only last day jobs sorted by date desc
     await page.goto(newUrl);
     await page.waitForSelector('#filter_fromAge');//wait for Posted time div
-    await page.screenshot({ path: path.resolve(storageFolder, 'jobList.png') })
 }
 
 async function login() {

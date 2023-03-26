@@ -2,18 +2,17 @@ const Last = require('../models/Last');
 const Company = require('../models/Company');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { getHashtags, sleep, convertStringToDateTime } = require('../utils/tools');
+const { getHashtags, sleep, convertStringToDateTime, locations } = require('../utils/tools');
 const util = require('node:util');
 const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
 const lngDetector = new LanguageDetect();
-const locations = ["Netherlands", "Germany", "Sweden", "Finland"];
 
 const linkedIn = async () => {
     try {
         let jobs = [];
         for (let j = 0; j < locations.length; j++) {
-            let linkedInLink = util.format(process.env.LINKEDIN_ENDPOINT, locations[j]);
+            let linkedInLink = util.format(process.env.LINKEDIN_ENDPOINT, locations[j].name);
             let html = await axios.get(linkedInLink);
             await sleep(5000);
             const $ = cheerio.load(html.data);

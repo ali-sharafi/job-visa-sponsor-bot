@@ -23,6 +23,7 @@ const {
 const { linkedIn } = require('./Crawlers/linkedIn');
 const Last = require('./models/Last');
 const moment = require('moment');
+const glassdoor = require('./Crawlers/glassdoor');
 
 
 module.exports.GetAll = async () => {
@@ -30,6 +31,7 @@ module.exports.GetAll = async () => {
         let Result = []
 
         Result.push(
+            ...(await glassdoor()),
             ...(await relocateDotMeJobs()),
             ...(await vanhackJobs()),
             ...(await reeddotcodotukJobs()),
@@ -37,7 +39,8 @@ module.exports.GetAll = async () => {
             ...(await simplyhiredJobs()),
             ...(await swissDevJobs()),
             ...(await landingJobs()),
-            ...(await linkedIn()));
+            ...(await linkedIn())
+        );
 
         return Result
     } catch (error) {
