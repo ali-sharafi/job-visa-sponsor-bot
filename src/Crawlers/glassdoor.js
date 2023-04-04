@@ -127,6 +127,7 @@ async function login() {
     await page.waitForTimeout(1000);
     await page.type('#inlineUserEmail', process.env.GLASSDOOR_USERNAME, { delay: 100 });
     await page.click('.authInlineContainer button[data-testid="email-form-button"]')//click on continue with email button
+    // await page.screenshot({ path: path.resolve(storageFolder, 'inlineUserPassword.png') });
     await page.waitForSelector('#inlineUserPassword')//wait for the password input
     await page.type('#inlineUserPassword', process.env.GLASSDOOR_PASS, { delay: 100 });
     await page.click('.authInlineContainer button[name="submit"]')//click on Sign In button
