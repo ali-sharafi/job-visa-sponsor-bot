@@ -11,7 +11,7 @@ down:
 	docker-compose -f $(COMPOSE_FILES) down
 
 shell:
-	docker-compose --env-file ./.env -f $(COMPOSE_FILES) exec app sh
+	docker-compose --env-file ./.env -f $(COMPOSE_FILES) exec app bash
 
 shell-as-root:
 	docker-compose -f $(COMPOSE_FILES) exec --user=$(ROOT_USER) app sh

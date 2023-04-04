@@ -7,6 +7,8 @@ const { getHashtags, sleep, locations } = require('../utils/tools');
 const Last = require('../models/Last');
 const source = 'glassdoor';
 const glassdoorURL = 'https://www.glassdoor.com';
+const LanguageDetect = require('languagedetect');
+const lngDetector = new LanguageDetect();
 var page = null;
 var browser = null;
 
@@ -63,21 +65,36 @@ async function parsePageJobs(country) {
                 guid: guid,
             }).save();
 
-            jobs.push({
-                location: `${country}-${location}`,
-                url: `${glassdoorURL}${url}`,
-                company,
-                title,
-                content: '',
-                when: today,
-                source,
-                hashtags: getHashtags(title),
-                options: null,
-            })
+            const { content, isEnglish } = await getJobContent(listItem);
+            if (isEnglish) {
+                jobs.push({
+                    location: `${country}-${location}`,
+                    url: `${glassdoorURL}${url}`,
+                    company,
+                    title,
+                    content: content,
+                    when: today,
+                    source,
+                    hashtags: getHashtags(title),
+                    options: null,
+                })
+            }
         }
+        await sleep(5000);
     }
 
     return jobs;
+}
+
+async function getJobContent(item) {
+    await item.click();
+    await page.waitForSelector('button[data-test="save-button"]');
+    let content = await page.evaluate(() => document.querySelector('.jobDescriptionContent').innerText.trim());
+
+    return {
+        content: content.slice(0, 150) + '...',
+        isEnglish: lngDetector.detect(content, 1).length > 0 ? lngDetector.detect(content, 1)[0][0] == 'english' : false
+    }
 }
 
 async function gotToGlassdoodr() {
