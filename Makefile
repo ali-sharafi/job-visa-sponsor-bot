@@ -5,7 +5,7 @@ help:
 	@echo "make file"
 
 up:
-	docker-compose -f $(COMPOSE_FILES) --env-file ./.env up -d app
+	docker-compose -f $(COMPOSE_FILES) --env-file ./.env up -d --build app
 
 down:
 	docker-compose -f $(COMPOSE_FILES) down

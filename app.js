@@ -10,14 +10,18 @@ const {
 const logger = require('./utils/logger');
 const reader = require('./utils/reader');
 const db = require('./utils/db');
+const { launchBrowser } = require('./Crawlers/glassdoor');
 
-db.connect().then(() => {
-    if (process.env.UPDATE_DB === 'true') {
-        logger('Going to Update DB');
-        GetAll().then(() => {
-            logger('Update DB was done');
-        });
-    }
+launchBrowser().then(() => {
+    logger('Browser launched');
+    db.connect().then(() => {
+        if (process.env.UPDATE_DB === 'true') {
+            logger('Going to Update DB');
+            GetAll().then(() => {
+                logger('Update DB was done');
+            });
+        }
+    })
 })
 
 cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {

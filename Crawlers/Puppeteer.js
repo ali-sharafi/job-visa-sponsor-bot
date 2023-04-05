@@ -15,6 +15,8 @@ class Pup {
             `--window-size=1280,960`,
             '--no-sandbox',
             '--disable-features=site-per-process',
+            '--disable-cache',
+            '--disk-cache-size=0'
         ];
         this.speed = 1
     }

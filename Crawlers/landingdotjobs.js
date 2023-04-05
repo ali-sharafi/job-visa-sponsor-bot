@@ -54,7 +54,7 @@ const landingJobs = async () => {
 
         return (await jobs).filter(item => item);
     } catch (err) {
-        console.log(err)
+        // console.log(err)
         return [];
     }
 }

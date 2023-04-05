@@ -12,20 +12,24 @@ const lngDetector = new LanguageDetect();
 var page = null;
 var browser = null;
 
-module.exports = async () => {
+module.exports.launchBrowser = async () => {
     browser = puppet.make();
     let ws = await browser.browserInit();
     if (!await browser.connect(ws)) {
         return console.log('failed')
     }
-
     page = browser.page;
+    await page.setCacheEnabled(false);
+}
+
+module.exports.glassdoor = async () => {
     await setCookies();
     let jobs = await getJobs();
-    await browser.disconnect();
-    await browser.close();
-    browser = null;
-
+    // console.log('jobs got')
+    // await browser.disconnect();
+    // await browser.close();
+    // browser = null;
+    console.log('glassdoor done');
     return jobs;
 }
 

@@ -23,7 +23,7 @@ const {
 const { linkedIn } = require('./Crawlers/linkedIn');
 const Last = require('./models/Last');
 const moment = require('moment');
-const glassdoor = require('./Crawlers/glassdoor');
+const { glassdoor } = require('./Crawlers/glassdoor');
 
 
 module.exports.GetAll = async () => {
