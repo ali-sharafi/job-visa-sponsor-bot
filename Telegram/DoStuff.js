@@ -1,5 +1,5 @@
-const logger = require('../../utils/logger');
-const { sleep } = require('../../utils/tools');
+const logger = require('../utils/logger');
+const { sleep } = require('../utils/tools');
 const {
     bot
 } = require('./bot')

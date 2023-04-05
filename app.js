@@ -3,7 +3,7 @@ dotenv.config();
 const cron = require('node-cron');
 const {
     SendJobs
-} = require('./Bots/Telegram/DoStuff');
+} = require('./Telegram/DoStuff');
 const {
     GetAll, RemoveLasts
 } = require('./AIO');
