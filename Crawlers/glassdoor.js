@@ -22,6 +22,7 @@ module.exports = async () => {
     page = browser.page;
     await setCookies();
     let jobs = await getJobs();
+    await browser.disconnect();
     await browser.close();
     browser = null;
 
