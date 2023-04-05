@@ -28,19 +28,30 @@ const { glassdoor } = require('./Crawlers/glassdoor');
 
 module.exports.GetAll = async () => {
     try {
-        let Result = []
+        let [
+            gd,
+            rMe,
+            vck,
+            rd,
+            rMeEu,
+            sply,
+            swiss,
+            landing,
+            lnkdIn
+        ] = await Promise.all([
+            glassdoor(),
+            relocateDotMeJobs(),
+            vanhackJobs(),
+            reeddotcodotukJobs(),
+            relocateMeDotEuJobs(),
+            simplyhiredJobs(),
+            swissDevJobs(),
+            landingJobs(),
+            linkedIn()
+        ]);
 
-        Result.push(
-            ...(await glassdoor()),
-            ...(await relocateDotMeJobs()),
-            ...(await vanhackJobs()),
-            ...(await reeddotcodotukJobs()),
-            ...(await relocateMeDotEuJobs()),
-            ...(await simplyhiredJobs()),
-            ...(await swissDevJobs()),
-            ...(await landingJobs()),
-            ...(await linkedIn())
-        );
+        let Result = [...gd, ...rMe, ...vck, ...rd, ...rMeEu, ...sply, ...swiss, ...landing, ...lnkdIn];
+
 
         return Result
     } catch (error) {

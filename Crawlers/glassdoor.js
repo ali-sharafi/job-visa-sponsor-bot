@@ -8,6 +8,7 @@ const Last = require('../models/Last');
 const source = 'glassdoor';
 const glassdoorURL = 'https://www.glassdoor.com';
 const LanguageDetect = require('languagedetect');
+const logger = require('../utils/logger');
 const lngDetector = new LanguageDetect();
 var page = null;
 var browser = null;
@@ -24,12 +25,17 @@ module.exports.launchBrowser = async () => {
 
 module.exports.glassdoor = async () => {
     await setCookies();
-    let jobs = await getJobs();
+    let jobs = [];
+    try {
+        jobs = await getJobs();
+    } catch (error) {
+        logger('Glassdoor error: ', error)
+    }
     // console.log('jobs got')
     // await browser.disconnect();
     // await browser.close();
     // browser = null;
-    console.log('glassdoor done');
+    logger('glassdoor done');
     return jobs;
 }
 
@@ -39,7 +45,7 @@ async function getJobs() {
     for (let i = 0; i < locations.length; i++) {
         await searchJobs(locations[i].id);
         jobs.push(...(await parsePageJobs(locations[i].name)))
-        await sleep(10000);
+        await sleep(3000);
     }
 
     return jobs;
@@ -85,7 +91,7 @@ async function parsePageJobs(country) {
                 })
             }
         }
-        await sleep(5000);
+        await sleep(3000);
     }
 
     return jobs;
