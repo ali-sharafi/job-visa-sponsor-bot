@@ -76,7 +76,7 @@ async function parsePageJobs(country) {
                 guid: guid,
             }).save();
 
-            const { content, isEnglish } = await getJobContent(listItem);
+            const { content, isEnglish, fullContent } = await getJobContent(listItem);
             if (isEnglish) {
                 jobs.push({
                     location: `${country}-${location}`,
@@ -86,7 +86,7 @@ async function parsePageJobs(country) {
                     content: content,
                     when: today,
                     source,
-                    hashtags: getHashtags(title),
+                    hashtags: getHashtags(fullContent),
                     options: null,
                 })
             }
@@ -104,6 +104,7 @@ async function getJobContent(item) {
 
     return {
         content: content.slice(0, 150) + '...',
+        fullContent: content,
         isEnglish: lngDetector.detect(content, 1).length > 0 ? lngDetector.detect(content, 1)[0][0] == 'english' : false
     }
 }

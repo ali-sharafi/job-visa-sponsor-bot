@@ -3,6 +3,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 let Parser = require('rss-parser');
 const logger = require('../utils/logger');
+const { getHashtags } = require('../utils/tools');
 
 const reeddotcodotukJobs = async () => {
     try {
@@ -33,22 +34,7 @@ const reeddotcodotukJobs = async () => {
                     options = options + ' - ' + $(el).find('.job-metadata__item.job-metadata__item--type').text().trim().replace(', ', ' - ').trim();
                 }
             }
-            const hashtags = title.toLowerCase()
-                .replace('full stack', 'fullstack')
-                .replace('big data', 'big-data')
-                .replace('software', '')
-                .replace('engineer', '')
-                .replace('developer', '')
-                .replace('.net', 'dotnet')
-                .replace(/[^\w\s]/gi, '')
-                .replace(' and ', ' ')
-                .replace(' or ', ' ')
-                .replace(' with ', ' ')
-                .replace('success', ' ')
-                .replace('-', '')
-                .replace('/', '')
-                .split(' ')
-                .filter(item => item.length > 2).map(item => item.replace(/[^\w\s]/gi, ''));
+            const hashtags = getHashtags(content);
             const exist = await Last.findOne({
                 where: "reed.co.uk",
                 guid: url

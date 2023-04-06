@@ -1,22 +1,46 @@
 const moment = require('moment');
 
-const getHashtags = (title) => {
-    return title.toLowerCase()
-        .replace('full stack', 'fullstack')
-        .replace('big data', 'big-data')
-        .replace('software', '')
-        .replace('engineer', '')
-        .replace('developer', '')
-        .replace('.net', 'dotnet')
-        .replace(/[^\w\s]/gi, '')
-        .replace(' and ', ' ')
-        .replace(' or ', ' ')
-        .replace(' with ', ' ')
-        .replace('success', ' ')
-        .replace('-', '')
-        .replace('/', '')
-        .split(' ')
-        .filter(item => item.length > 2).map(item => item.replace(/[^\w\s]/gi, ''));
+const getHashtags = (jobDescription) => {
+    const languagesAndTechnologies = {
+        python: "Python",
+        java: "Java",
+        csharp: "C#",
+        dotnet:'.NET',
+        go: "Go",
+        ruby: "Ruby",
+        php: "PHP",
+        unity:'Unity',
+        swift: "Swift",
+        kotlin: "Kotlin",
+        scala: "Scala",
+        sql: "SQL",
+        node: "Node.js",
+        react: "React",
+        angular: "Angular",
+        vue: "Vue.js",
+        express: "Express.js",
+        django: "Django",
+        flask: "Flask",
+        tensorflow: "TensorFlow",
+        pytorch: "PyTorch",
+        keras: "Keras",
+        pandas: "Pandas",
+        numpy: "NumPy",
+        scikit: "Scikit-learn",
+        spark: "Apache Spark",
+        bi: "BI"
+    };
+
+    // Array of labels to be excluded
+    const excludeLabels = ["engineer", "developer", "programmer"];
+
+    // Extract the programming languages and technologies mentioned in the job description
+    const mentionedLanguagesAndTechnologies = Object.entries(languagesAndTechnologies)
+        .filter(([languageOrTechnology]) => new RegExp(`\\b${languageOrTechnology}\\b`, "i").test(jobDescription))
+        .map(([_, label]) => label)
+        .filter(label => !excludeLabels.includes(label.toLowerCase()));
+
+    return mentionedLanguagesAndTechnologies
 }
 
 const sleep = (ms) => {
@@ -36,7 +60,7 @@ const convertStringToDateTime = (relativeTime) => {
         const match = /(\d+)\s+(\w+)\s+ago/.exec(relativeTime);
         const value = parseInt(match[1]);
         const unit = match[2];
-    
+
         const msAgo = value * timeUnits[unit];
         const adjustedTimestamp = timestamp - msAgo;
         const datetime = new Date(adjustedTimestamp);
@@ -45,7 +69,7 @@ const convertStringToDateTime = (relativeTime) => {
         console.log('Error ocurred in converting time: ', error.message);
         return moment().format('YYYY-MM-DD H:i:s');
     }
-    
+
 
 }
 const locations = [

@@ -25,7 +25,6 @@ const linkedIn = async () => {
                 const location = $(job).find('.job-search-card__location').text().trim();
                 const url = $(job).find('a').attr('href');
                 // const guid = $(job).find('div.base-card').attr('data-entity-urn');
-                const hashtags = getHashtags(title);
                 const guid = company + title;
                 const exist = await Last.findOne({
                     where: source,
@@ -40,7 +39,8 @@ const linkedIn = async () => {
                     //     "name": { $regex: company }
                     // })
 
-                    const { content, isEnglish } = await getJobContent(url);
+                    const { content, isEnglish, fullContent } = await getJobContent(url);
+                    const hashtags = getHashtags(fullContent);
                     if (isEnglish) {
                         jobs.push({
                             title,
@@ -75,6 +75,7 @@ async function getJobContent(url) {
 
     return {
         content: shortContent + '...',
+        fullContent: content,
         isEnglish: lngDetector.detect(shortContent, 1).length > 0 ? lngDetector.detect(shortContent, 1)[0][0] == 'english' : false
     }
 }
