@@ -3,14 +3,15 @@ const moment = require('moment');
 const getHashtags = (jobDescription) => {
     const languagesAndTechnologies = {
         python: "Python",
-        android:"Android",
+        android: "Android",
         java: "Java",
         csharp: "C#",
-        dotnet:'.NET',
+        cplus: 'C++',
+        dotnet: '.NET',
         go: "Go",
         ruby: "Ruby",
         php: "PHP",
-        unity:'Unity',
+        unity: 'Unity',
         swift: "Swift",
         kotlin: "Kotlin",
         scala: "Scala",
@@ -37,7 +38,7 @@ const getHashtags = (jobDescription) => {
 
     // Extract the programming languages and technologies mentioned in the job description
     const mentionedLanguagesAndTechnologies = Object.entries(languagesAndTechnologies)
-        .filter(([languageOrTechnology]) => new RegExp(`\\b${languageOrTechnology}\\b`, "i").test(jobDescription))
+        .filter(([languageOrTechnology]) => new RegExp(`(?<=^|\\s)${languageOrTechnology.replace(".", "\\.")}(?!\\s)`, "i").test(jobDescription))
         .map(([_, label]) => label)
         .filter(label => !excludeLabels.includes(label.toLowerCase()));
 
