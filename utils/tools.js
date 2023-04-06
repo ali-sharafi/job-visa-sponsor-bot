@@ -17,6 +17,7 @@ const getHashtags = (jobDescription) => {
         scala: "Scala",
         sql: "SQL",
         node: "Node.js",
+        nodeJs:"NodeJS",
         react: "React",
         angular: "Angular",
         vue: "Vue.js",
