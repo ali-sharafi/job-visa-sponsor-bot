@@ -3,6 +3,7 @@ const moment = require('moment');
 const getHashtags = (jobDescription) => {
     const languagesAndTechnologies = {
         python: "Python",
+        android:"Android",
         java: "Java",
         csharp: "C#",
         dotnet:'.NET',
