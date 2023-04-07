@@ -39,7 +39,7 @@ const getHashtags = (jobDescription) => {
 
     // Extract the programming languages and technologies mentioned in the job description
     const mentionedLanguagesAndTechnologies = Object.entries(languagesAndTechnologies)
-        .filter(([languageOrTechnology]) => new RegExp(`(?<=^|\\s)${languageOrTechnology.replace(".", "\\.")}(?!\\s)`, "i").test(jobDescription))
+        .filter(([_, languageOrTechnology]) => new RegExp(`\\b(${languageOrTechnology})\\b`, "i").test(jobDescription))
         .map(([_, label]) => label)
         .filter(label => !excludeLabels.includes(label.toLowerCase()));
 
