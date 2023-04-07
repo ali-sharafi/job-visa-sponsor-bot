@@ -6,7 +6,6 @@ const getHashtags = (jobDescription) => {
         android: "Android",
         java: "Java",
         csharp: "C#",
-        cplus: 'C++',
         dotnet: '.NET',
         go: "Go",
         ruby: "Ruby",
