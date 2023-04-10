@@ -29,12 +29,8 @@ module.exports.glassdoor = async () => {
     try {
         jobs = await getJobs();
     } catch (error) {
-        logger('Glassdoor error: ', error)
+        logger('Glassdoor error: ', JSON.stringify({ message: error.message, stack: error.stack }))
     }
-    // console.log('jobs got')
-    // await browser.disconnect();
-    // await browser.close();
-    // browser = null;
     logger('glassdoor done');
     return jobs;
 }
