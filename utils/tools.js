@@ -16,7 +16,7 @@ const getHashtags = (jobDescription) => {
         scala: "Scala",
         sql: "SQL",
         node: "Node.js",
-        nodeJs:"NodeJS",
+        nodeJs: "NodeJS",
         react: "React",
         angular: "Angular",
         vue: "Vue.js",
@@ -90,6 +90,22 @@ const locations = [
     {
         name: 'Sweden',
         id: 223
+    },
+    {
+        name: 'Austria',
+        id: 18
+    },
+    {
+        name: 'Denmark',
+        id: 63
+    },
+    {
+        name: 'Norway',
+        id: 180
+    },
+    {
+        name: 'France',
+        id: 86
     }
 ]
 
