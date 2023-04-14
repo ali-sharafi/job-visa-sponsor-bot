@@ -2,18 +2,23 @@ const Last = require('../models/Last');
 const Company = require('../models/Company');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { getHashtags, sleep, convertStringToDateTime, locations } = require('../utils/tools');
+const { getHashtags, sleep, convertStringToDateTime, locations, getTunnelProxy } = require('../utils/tools');
 const util = require('node:util');
 const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
 const lngDetector = new LanguageDetect();
+var tunnelingAgent = null;
 
-const linkedIn = async () => {
+const linkedIn = async (keyword) => {
+    tunnelingAgent = await getTunnelProxy();
     try {
         let jobs = [];
         for (let j = 0; j < locations.length; j++) {
-            let linkedInLink = util.format(process.env.LINKEDIN_ENDPOINT, locations[j].name);
-            let html = await axios.get(linkedInLink);
+            let linkedInLink = util.format(process.env.LINKEDIN_ENDPOINT, keyword, locations[j].name);
+            let html = await axios.get(linkedInLink, {
+                proxy: false,
+                httpsAgent: tunnelingAgent
+            });
             await sleep(5000);
             const $ = cheerio.load(html.data);
             const jobsList = $('.jobs-search__results-list').children();
@@ -40,7 +45,8 @@ const linkedIn = async () => {
                     // })
 
                     const { content, isEnglish, fullContent } = await getJobContent(url);
-                    const hashtags = getHashtags(fullContent);
+                    let hashtags = getHashtags(fullContent);
+                    hashtags.push(keyword)
                     if (isEnglish) {
                         jobs.push({
                             title,
@@ -62,13 +68,16 @@ const linkedIn = async () => {
 
         return jobs;
     } catch (err) {
-        console.log(err);
+        console.log("LinkedIn Error: ", err.message);
         return [];
     }
 }
 
 async function getJobContent(url) {
-    let html = await axios.get(url);
+    let html = await axios.get(url, {
+        proxy: false,
+        httpsAgent: tunnelingAgent
+    });
     const $ = cheerio.load(html.data);
     let content = $('.show-more-less-html__markup').text().trim();
     let shortContent = content.slice(0, 150);

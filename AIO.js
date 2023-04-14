@@ -24,36 +24,30 @@ const { linkedIn } = require('./Crawlers/linkedIn');
 const Last = require('./models/Last');
 const moment = require('moment');
 const { glassdoor } = require('./Crawlers/glassdoor');
+const { flatten } = require('lodash');
 
 
 module.exports.GetAll = async () => {
+    const promises = [
+        glassdoor(),
+        relocateDotMeJobs(),
+        vanhackJobs(),
+        reeddotcodotukJobs(),
+        relocateMeDotEuJobs(),
+        simplyhiredJobs(),
+        swissDevJobs(),
+        landingJobs(),
+        linkedIn('Developer'),
+        linkedIn('Designer'),
+        linkedIn('Network'),
+        linkedIn('BI'),
+        linkedIn('DevOps'),
+        linkedIn('SRE'),
+    ];
     try {
-        let [
-            gd,
-            rMe,
-            vck,
-            rd,
-            rMeEu,
-            sply,
-            swiss,
-            landing,
-            lnkdIn
-        ] = await Promise.all([
-            glassdoor(),
-            relocateDotMeJobs(),
-            vanhackJobs(),
-            reeddotcodotukJobs(),
-            relocateMeDotEuJobs(),
-            simplyhiredJobs(),
-            swissDevJobs(),
-            landingJobs(),
-            linkedIn()
-        ]);
+        let result = await Promise.all(promises);
 
-        let Result = [...gd, ...rMe, ...vck, ...rd, ...rMeEu, ...sply, ...swiss, ...landing, ...lnkdIn];
-
-
-        return Result
+        return flatten(result)
     } catch (error) {
         logger(error);
     }

@@ -1,4 +1,7 @@
 const moment = require('moment');
+const tunnel = require('tunnel');
+const Proxy = require('../models/Proxy');
+const { default: axios } = require('axios');
 
 const getHashtags = (jobDescription) => {
     const languagesAndTechnologies = {
@@ -68,7 +71,6 @@ const convertStringToDateTime = (relativeTime) => {
         const datetime = new Date(adjustedTimestamp);
         return datetime.toISOString().replace(/T|Z/g, ' ').trim();
     } catch (error) {
-        console.log('Error ocurred in converting time: ', error.message);
         return moment().format('YYYY-MM-DD H:i:s');
     }
 
@@ -109,9 +111,64 @@ const locations = [
     }
 ]
 
+const getTunnelProxy = async (_proxy) => {
+    let proxy = _proxy || await getRandomProxy();
+    let tunnelingAgent = tunnel.httpsOverHttp({
+        proxy: {
+            host: proxy.ip,
+            port: proxy.port,
+            proxyAuth: `${proxy.username}:${proxy.password}`,
+            headers: {
+                'User-Agent': 'Node'
+            }
+        }
+    });
+
+    return tunnelingAgent;
+}
+
+const getRandomProxy = async () => {
+    let [proxy] = await Proxy.aggregate([
+        // { $match: { "enabled": 1 } },
+        { $sample: { size: 1 } }
+    ]);
+
+    if (!(await checkProxy(proxy))) {
+        return await getRandomProxy();
+    }
+
+    return proxy;
+}
+
+const checkProxy = async (proxy) => {
+    var tunnelingAgent = tunnel.httpsOverHttp({
+        proxy: {
+            host: proxy.ip,
+            port: proxy.port,
+            proxyAuth: `${proxy.username}:${proxy.password}`,
+            headers: {
+                'User-Agent': 'Node'
+            }
+        }
+    });
+
+    try {
+        await axios.get('https://www.linkedin.com', {
+            proxy: false,
+            httpsAgent: tunnelingAgent
+        })
+    } catch (error) {
+        return false;
+    }
+
+    return true;
+}
+
 module.exports = {
     getHashtags,
     sleep,
     convertStringToDateTime,
-    locations
+    locations,
+    getTunnelProxy,
+    getRandomProxy
 }
