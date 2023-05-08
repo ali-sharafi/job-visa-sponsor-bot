@@ -43,6 +43,7 @@ module.exports.GetAll = async () => {
         linkedIn('BI'),
         linkedIn('DevOps'),
         linkedIn('SRE'),
+        linkedIn('Android'),
     ];
     try {
         let result = await Promise.all(promises);
