@@ -17,15 +17,18 @@ launchBrowser().then(() => {
     db.connect().then(() => {
         if (process.env.UPDATE_DB === 'true') {
             logger('Going to Update DB');
-            GetAll().then(() => {
-                logger('Update DB was done');
-            });
+            getJobs();
         }
     })
 })
 
 cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
     logger('Cron job runs');
+    getJobs()
+    RemoveLasts();
+});
+
+function getJobs(){
     GetAll().then(async (result) => {
         if (result.length != 0) {
             await SendJobs(result)
@@ -33,5 +36,4 @@ cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
     }).catch((e) => {
         console.log(e);
     });
-    RemoveLasts();
-});
+}

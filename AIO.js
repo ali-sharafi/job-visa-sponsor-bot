@@ -30,20 +30,9 @@ const { flatten } = require('lodash');
 module.exports.GetAll = async () => {
     const promises = [
         glassdoor(),
-        relocateDotMeJobs(),
-        vanhackJobs(),
-        reeddotcodotukJobs(),
-        relocateMeDotEuJobs(),
-        simplyhiredJobs(),
-        swissDevJobs(),
-        landingJobs(),
-        linkedIn('Developer'),
-        linkedIn('Designer'),
-        linkedIn('Network'),
-        linkedIn('BI'),
-        linkedIn('DevOps'),
-        linkedIn('SRE'),
-        linkedIn('Android'),
+        linkedIn('HR'),
+        linkedIn('Assistant'),
+        linkedIn('Work Student'),
     ];
     try {
         let result = await Promise.all(promises);

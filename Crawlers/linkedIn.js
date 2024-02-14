@@ -6,6 +6,7 @@ const { getHashtags, sleep, convertStringToDateTime, locations, getTunnelProxy }
 const util = require('node:util');
 const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
+const logger = require('../utils/logger');
 const lngDetector = new LanguageDetect();
 var tunnelingAgent = null;
 
@@ -65,7 +66,7 @@ const linkedIn = async (keyword) => {
                 }
             }
         }
-
+        logger("LinkedIn is done!")
         return jobs;
     } catch (err) {
         console.log("LinkedIn Error: ", err.message);
@@ -74,6 +75,7 @@ const linkedIn = async (keyword) => {
 }
 
 async function getJobContent(url) {
+    tunnelingAgent = await getTunnelProxy();
     let html = await axios.get(url, {
         proxy: false,
         httpsAgent: tunnelingAgent

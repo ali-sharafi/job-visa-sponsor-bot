@@ -49,16 +49,16 @@ async function getJobs() {
 
 async function parsePageJobs(country) {
     let jobs = [];
-    const listItems = await page.$$('#JobResults li.react-job-listing');
+    const listItems = await page.$$('ul [class^="JobsList"][data-test="jobListing"]');
     let today = moment().format('YYYY-MM-DD');
 
     for (const listItem of listItems) {
         const { location, url, company, title } = await listItem.evaluate(element => {
             return {
-                location: element.getAttribute('data-job-loc'),
+                location: element.querySelector('[id^="job-location"]').innerText,
                 url: element.querySelector('a').getAttribute('href'),
-                company: element.querySelectorAll('a')[1].querySelector('span').innerText,
-                title: element.querySelectorAll('a')[2].querySelector('span').innerText,
+                company: element.querySelector('span[class^="EmployerProfile_employerName"]').innerText,
+                title: element.querySelector('[id^="job-title"]').innerText,
             }
         });
         const guid = company + title;
@@ -95,8 +95,8 @@ async function parsePageJobs(country) {
 
 async function getJobContent(item) {
     await item.click();
-    await page.waitForSelector('button[data-test="save-button"]');
-    let content = await page.evaluate(() => document.querySelector('.jobDescriptionContent').innerText.trim());
+    await page.waitForTimeout(3000);
+    let content = await page.evaluate(() => document.querySelector('div[class^="JobDetails_jobDescription_"]').innerText.trim());
 
     return {
         content: content.slice(0, 150) + '...',
@@ -117,30 +117,25 @@ async function gotToGlassdoodr() {
 }
 
 async function searchJobs(locationId) {
-    let jobsLink = `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=developer&locT=N&locId=${locationId}`;
-
-    await page.goto(jobsLink);
-    await page.waitForSelector('#filter_fromAge');//wait for Posted time div
-    const currentUrl = await page.url();
-    const newUrl = `${currentUrl}?fromAge=1&sortBy=date_desc`;//only last day jobs sorted by date desc
+    const newUrl = `https://www.glassdoor.com/Job/cologne-germany-hr-jobs-SRCH_IL.0,15_IC4348509_KO16,18.htm?fromAge=1&sortBy=date_desc`;//only last day jobs sorted by date desc
     await page.goto(newUrl);
-    await page.waitForSelector('#filter_fromAge');//wait for Posted time div
 }
 
 async function login() {
     //Sometimes need to click on Accept Cookies button
     await checkAcceptCookies();
 
-    await page.click('.input-wrapper')//click on input to focus
+    await page.click('.TextInputWrapper')//click on input to focus
     await page.waitForTimeout(1000);
     await page.type('#inlineUserEmail', process.env.GLASSDOOR_USERNAME, { delay: 100 });
-    await page.click('.authInlineContainer button[data-testid="email-form-button"]')//click on continue with email button
+    await page.click('.emailButton button')//click on continue with email button
     // await page.screenshot({ path: path.resolve(storageFolder, 'inlineUserPassword.png') });
     await page.waitForSelector('#inlineUserPassword')//wait for the password input
     await page.type('#inlineUserPassword', process.env.GLASSDOOR_PASS, { delay: 100 });
-    await page.click('.authInlineContainer button[name="submit"]')//click on Sign In button
+    await page.click('.emailButton button')//click on Sign In button
     await page.waitForSelector('#sc\\.keyword', { timeout: 60000 });
     console.log('Sigined In successfully');
+    await page.screenshot({ path: path.resolve(storageFolder, 'inlineUserPassword.png') })
     await saveCookies();
 }
 
@@ -161,9 +156,9 @@ async function checkAcceptCookies() {
 
 async function isNotLoggedIn() {
     const buttonExists = await page.evaluate((text) => {
-        const button = Array.from(document.getElementsByTagName('button')).find(b => b.innerText === text);
+        const button = Array.from(document.getElementsByTagName('button')).find(b => b.ariaLabel === text);
         return !!button;
-    }, 'Sign In');
+    }, 'sign in button');
 
     return buttonExists;
 }

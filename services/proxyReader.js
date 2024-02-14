@@ -1,7 +1,8 @@
 const Proxy = require("../models/Proxy");
 const fs = require('fs');
+const db = require('../utils/db');
 
-(async () => {
+db.connect().then(async () => {
     await Proxy.deleteMany({});
     fs.readFile('./proxies.txt', 'utf-8', async (err, data) => {
         if (err) console.log('error: ', err);
@@ -23,4 +24,4 @@ const fs = require('fs');
             console.log('Proxies inserted successfully');
         }
     })
-})()
+})
