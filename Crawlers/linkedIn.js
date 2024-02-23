@@ -7,6 +7,7 @@ const util = require('node:util');
 const source = 'LinkedIn';
 const LanguageDetect = require('languagedetect');
 const logger = require('../utils/logger');
+const { sendJob } = require('../Telegram/DoStuff');
 const lngDetector = new LanguageDetect();
 var tunnelingAgent = null;
 
@@ -49,7 +50,7 @@ const linkedIn = async (keyword) => {
                     let hashtags = getHashtags(fullContent);
                     hashtags.push(keyword)
                     if (isEnglish) {
-                        jobs.push({
+                        sendJob({
                             title,
                             company,
                             location,

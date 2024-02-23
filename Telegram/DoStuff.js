@@ -28,8 +28,14 @@ async function sendMessage(message) {
 
 module.exports.SendJobs = async (data) => {
     for (let index = 0; index < data.length; index++) {
-        const message = creator(data[index], index);
-        await sendMessage(message);
+        sendJob(data[index]);
         await sleep(process.env.TIME_TO_SEND)
     }
 }
+
+const sendJob = async (job) => {
+    const message = creator(job);
+    await sendMessage(message);
+}
+
+module.exports.sendJob = sendJob;

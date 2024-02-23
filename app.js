@@ -29,11 +29,7 @@ cron.schedule(process.env.CRON_JOB_SCHEDULE, () => {
 });
 
 function getJobs(){
-    GetAll().then(async (result) => {
-        if (result.length != 0) {
-            await SendJobs(result)
-        } else logger('Result is empty')
-    }).catch((e) => {
+    GetAll().catch((e) => {
         console.log(e);
     });
 }

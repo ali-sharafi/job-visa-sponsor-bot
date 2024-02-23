@@ -9,6 +9,7 @@ const source = 'glassdoor';
 const glassdoorURL = 'https://www.glassdoor.com';
 const LanguageDetect = require('languagedetect');
 const logger = require('../utils/logger');
+const { sendJob } = require('../Telegram/DoStuff');
 const lngDetector = new LanguageDetect();
 var page = null;
 var browser = null;
@@ -37,22 +38,18 @@ module.exports.glassdoor = async () => {
 
 async function getJobs() {
     await gotToGlassdoodr();
-    let jobs = [];
-    for (let i = 0; i < locations.length; i++) {
-        await searchJobs(locations[i].id);
-        jobs.push(...(await parsePageJobs(locations[i].name)))
-        await sleep(3000);
-    }
-
-    return jobs;
+    await searchJobs(69);
+    await parsePageJobs('Germany')
 }
 
 async function parsePageJobs(country) {
     let jobs = [];
+    await page.screenshot({ path: path.resolve(storageFolder, 'inlineUserPassword.png') })
     const listItems = await page.$$('ul [class^="JobsList"][data-test="jobListing"]');
     let today = moment().format('YYYY-MM-DD');
 
-    for (const listItem of listItems) {
+    for (let i = 0; i < listItems.length; i++) {
+        const listItem = listItems[i];
         const { location, url, company, title } = await listItem.evaluate(element => {
             return {
                 location: element.querySelector('[id^="job-location"]').innerText,
@@ -61,6 +58,7 @@ async function parsePageJobs(country) {
                 title: element.querySelector('[id^="job-title"]').innerText,
             }
         });
+        console.log('company: ',company, 'i: ',i)
         const guid = company + title;
         const exist = await Last.findOne({
             where: source,
@@ -74,9 +72,9 @@ async function parsePageJobs(country) {
 
             const { content, isEnglish, fullContent } = await getJobContent(listItem);
             if (isEnglish) {
-                jobs.push({
+                sendJob({
                     location: `${country}-${location}`,
-                    url: `${glassdoorURL}${url}`,
+                    url: `${url}`,
                     company,
                     title,
                     content: content,
@@ -107,7 +105,7 @@ async function getJobContent(item) {
 
 async function gotToGlassdoodr() {
     await page.goto('https://www.glassdoor.com');
-    await page.waitForSelector('a[href="/index.htm"]');
+    await page.waitForSelector('[data-test="search-button"]');
     await setLocalStorage();
     if (await isNotLoggedIn()) {
         console.log('Needs to login');
