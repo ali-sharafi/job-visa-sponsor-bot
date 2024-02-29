@@ -132,8 +132,8 @@ const getRandomProxy = async () => {
         // { $match: { "enabled": 1 } },
         { $sample: { size: 1 } }
     ]);
-
-    if (!(await checkProxy(proxy))) {
+let proxyActive = await checkProxy(proxy);
+    if (!proxyActive) {
         return await getRandomProxy();
     }
 

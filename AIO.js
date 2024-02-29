@@ -28,19 +28,10 @@ const { flatten } = require('lodash');
 
 
 module.exports.GetAll = async () => {
-    const promises = [
-        glassdoor(),
-        linkedIn('HR'),
-        linkedIn('Assistant'),
-        linkedIn('Work Student'),
-    ];
-    try {
-        let result = await Promise.all(promises);
-
-        return flatten(result)
-    } catch (error) {
-        logger(error);
-    }
+    glassdoor(),
+    await linkedIn('HR');
+    await linkedIn('Assistant');
+    await linkedIn('Work Student');
 }
 
 module.exports.RemoveLasts = async () => {
